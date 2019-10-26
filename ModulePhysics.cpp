@@ -73,6 +73,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool static_body
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	fixture.restitution = 0.5f;
 
 	b->CreateFixture(&fixture);
 

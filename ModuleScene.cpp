@@ -63,20 +63,23 @@ bool ModuleScene::Start()
 	plat4->type = PLATFORM;
 
 
-	circlesBumper[1] = App->physics->CreateCircle(132, 185, 10, true);
+	//Circle Bumpers
+
+	circlesBumper[1] = App->physics->CreateCircle(132, 185, 15, true);
 	circlesBumper[1]->type = REDBUMBPER1;
-	circlesBumper[2] = App->physics->CreateCircle(192, 185, 10, true);
+	circlesBumper[1]->body->ApplyAngularImpulse(10.0f, true);
+	circlesBumper[2] = App->physics->CreateCircle(192, 185, 15, true);
 	circlesBumper[2]->type = REDBUMBPER2;
-	circlesBumper[3] = App->physics->CreateCircle(252, 185, 10, true);
+	circlesBumper[3] = App->physics->CreateCircle(252, 185, 15, true);
 	circlesBumper[3]->type = REDBUMBPER3;
-	circlesBumper[4] = App->physics->CreateCircle(312, 185, 10, true);
+	circlesBumper[4] = App->physics->CreateCircle(312, 185, 15, true);
 	circlesBumper[4]->type = REDBUMBPER4;
-	circlesBumper[5] = App->physics->CreateCircle(132, 254, 10, true);
+	circlesBumper[5] = App->physics->CreateCircle(132, 254, 15, true);
 	circlesBumper[5]->type = REDBUMBPER5;
-	circlesBumper[6] = App->physics->CreateCircle(273, 268, 10, true);
-	circlesBumper[6]->type = REDBUMBPER5;
-	circlesBumper[7] = App->physics->CreateCircle(144, 315, 10, true);
-	circlesBumper[7]->type = REDBUMBPER5;
+	circlesBumper[6] = App->physics->CreateCircle(273, 268, 15, true);
+	circlesBumper[6]->type = REDBUMBPER6;
+	circlesBumper[7] = App->physics->CreateCircle(144, 315, 15, true);
+	circlesBumper[7]->type = REDBUMBPER7;
 
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
@@ -148,22 +151,27 @@ update_status ModuleScene::Update()
 	}
 	else StartBumper->body->SetActive(false);
 
-	if (changeCircle1Colore == true) {
-		App->renderer->Blit(blueBumper, 118, 170);
-	}
-	else App->renderer->Blit(redBumper, 118, 170);
+	if (changeCircle1Colore == true)App->renderer->Blit(blueBumper, 118, 170);
+	if (changeCircle1Colore == false)App->renderer->Blit(redBumper, 118, 170);
 
-	App->renderer->Blit(redBumper, 178, 170);
+	if (changeCircle2Colore == true)App->renderer->Blit(blueBumper, 178, 170);
+	if (changeCircle2Colore == false)App->renderer->Blit(redBumper, 178, 170);
 
-	App->renderer->Blit(redBumper, 238, 170);
+	if (changeCircle3Colore == true)App->renderer->Blit(blueBumper, 238, 170);
+	if (changeCircle3Colore == false)App->renderer->Blit(redBumper, 238, 170);
 
-	App->renderer->Blit(redBumper, 298, 170);
+	if (changeCircle4Colore == true)App->renderer->Blit(blueBumper, 298, 170);
+	if (changeCircle4Colore == false)App->renderer->Blit(redBumper, 298, 170);
 
-	App->renderer->Blit(redBumper, 118, 240);
+	if (changeCircle5Colore == true)App->renderer->Blit(blueBumper, 118, 240);
+	if (changeCircle5Colore == false)App->renderer->Blit(redBumper, 118, 240);
 
-	App->renderer->Blit(redBumper, 259, 253);
+	if (changeCircle6Colore == true)App->renderer->Blit(blueBumper, 259, 253);
+	if (changeCircle6Colore == false)App->renderer->Blit(redBumper, 259, 253);
 
-	App->renderer->Blit(redBumper, 130, 300);
+	if (changeCircle7Colore == true)App->renderer->Blit(blueBumper, 130, 300);
+	if (changeCircle7Colore == false)App->renderer->Blit(redBumper, 130, 300);
+
 
 	int x, y;
 
@@ -215,7 +223,13 @@ bool ModuleScene::CleanUp()
 void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
-
+	changeCircle1Colore = false;
+	changeCircle2Colore = false;
+	changeCircle3Colore = false;
+	changeCircle4Colore = false;
+	changeCircle5Colore = false;
+	changeCircle6Colore = false;
+	changeCircle7Colore = false;
 	if (bodyA->type == GAMEOVER)
 	{
 		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
@@ -230,8 +244,38 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	}
 
-	if (bodyA->type == REDBUMBPER1) {
+	if (bodyB->type == REDBUMBPER1) {
 		changeCircle1Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER2) {
+		changeCircle2Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER3) {
+		changeCircle3Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER4) {
+		changeCircle4Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER5) {
+		changeCircle5Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER6) {
+		changeCircle6Colore = true;
+
+
+	}
+	if (bodyB->type == REDBUMBPER7) {
+		changeCircle7Colore = true;
 	}
 }
 

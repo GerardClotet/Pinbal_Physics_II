@@ -82,7 +82,12 @@ public:
 
 	bool StartBumperActive = false;
 	bool changeCircle1Colore = false;
-
+	bool changeCircle2Colore = false;
+	bool changeCircle3Colore = false;
+	bool changeCircle4Colore = false;
+	bool changeCircle5Colore = false;
+	bool changeCircle6Colore = false;
+	bool changeCircle7Colore = false;
 	
 };
 
