@@ -45,39 +45,43 @@ public:
 	PhysBody* plat2;
 	PhysBody* plat3;
 	PhysBody* plat4;
-
-
 	PhysBody* ball;
 	PhysBody* Balk;
-
-
 	PhysBody* flipperBigRight;
 	PhysBody* flipperBigLeft;
 	PhysBody* flipperLittleLeft;
 	PhysBody* flipperLittleRight;
-
+	PhysBody* StartBumper;
+	PhysBody* StartSensor;
 	PhysBody* GameOverSensor;
-
+	PhysBody* circlesBumper[7];
+	PhysBody* yellowRight;
+	PhysBody* yellowLeft;
 
 	iPoint ball_position;
 	iPoint balk_poisiton;
+	iPoint startBumperPosition = { 410,350 };
 
 
 	SDL_Texture* Background = nullptr;
 	SDL_Texture* ball_texture = nullptr;
 	SDL_Texture* balk_texture = nullptr;
-
-
 	SDL_Texture* bigleftflipper = nullptr;
 	SDL_Texture* bigrightflipper = nullptr;
 	SDL_Texture* littlerigthflipper = nullptr;
 	SDL_Texture* littleleftflipper = nullptr;
+	SDL_Texture* redBumper = nullptr;
+	SDL_Texture* blueBumper = nullptr;
+	SDL_Texture* yellowBumper = nullptr;
 
 	SDL_Rect up_part;
 	SDL_Rect down_part;
 
 
 	b2MouseJoint* balk_joint;
+
+	bool StartBumperActive = false;
+	bool changeCircle1Colore = false;
 
 	
 };

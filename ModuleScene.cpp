@@ -32,9 +32,9 @@ bool ModuleScene::Start()
 	bigrightflipper = App->textures->Load("pinball/flipper.png");
 	littleleftflipper = App->textures->Load("pinball/littleflipperLeft.png");
 	littlerigthflipper = App->textures->Load("pinball/littleflipperRight.png");
-
-	//Colliders
-
+	yellowBumper = App->textures->Load("pinball/yellowBumper.png");
+	redBumper = App->textures->Load("pinball/redBumper.png");
+	blueBumper = App->textures->Load("pinball/blueBumper.png");
 
 //Colliders
 	backgroundphys = App->physics->CreateChain(0, 0, Board, 82, true);
@@ -63,6 +63,20 @@ bool ModuleScene::Start()
 	plat4->type = PLATFORM;
 
 
+	circlesBumper[1] = App->physics->CreateCircle(132, 185, 10, true);
+	circlesBumper[1]->type = REDBUMBPER1;
+	circlesBumper[2] = App->physics->CreateCircle(192, 185, 10, true);
+	circlesBumper[2]->type = REDBUMBPER2;
+	circlesBumper[3] = App->physics->CreateCircle(252, 185, 10, true);
+	circlesBumper[3]->type = REDBUMBPER3;
+	circlesBumper[4] = App->physics->CreateCircle(312, 185, 10, true);
+	circlesBumper[4]->type = REDBUMBPER4;
+	circlesBumper[5] = App->physics->CreateCircle(132, 254, 10, true);
+	circlesBumper[5]->type = REDBUMBPER5;
+	circlesBumper[6] = App->physics->CreateCircle(273, 268, 10, true);
+	circlesBumper[6]->type = REDBUMBPER5;
+	circlesBumper[7] = App->physics->CreateCircle(144, 315, 10, true);
+	circlesBumper[7]->type = REDBUMBPER5;
 
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
@@ -83,6 +97,14 @@ bool ModuleScene::Start()
 	GameOverSensor = App->physics->CreateRectangleSensor(242, 840, 483, 300, ball->listener, true);
 	GameOverSensor->type = GAMEOVER;
 
+	StartSensor = App->physics->CreateRectangleSensor(410, 350, 44, 10, ball->listener, true);
+	StartSensor->type = START;
+
+	//Bumpers
+	StartBumper = App->physics->CreateChain(0, 0, StartYellowBumper, 10, true);
+	yellowLeft = App->physics->CreateChain(0, 0, leftYellowBumper, 10, true);
+	yellowRight = App->physics->CreateChain(0, 0, rightYellowBumper, 10, true);
+
 	b2MouseJointDef def;
 	def.bodyA = App->physics->ground;
 	def.bodyB = Balk->body;
@@ -92,6 +114,8 @@ bool ModuleScene::Start()
 	def.maxForce = 100000.0f * Balk->body->GetMass();
 	balk_joint = (b2MouseJoint*)App->physics->world->CreateJoint(&def);
 
+
+	
 	//flippers
 
 	flipperBigRight = App->physics->CreateFlippers(283, 612, true); //right
@@ -112,10 +136,34 @@ update_status ModuleScene::Update()
 	ball->GetPosition(ball_position.x, ball_position.y);
 	Balk->GetPosition(balk_poisiton.x, balk_poisiton.y);
 
-	App->renderer->Blit(Background, 0, 0, &up_part);
 	App->renderer->Blit(Background, 0, 689, &down_part);
+	App->renderer->Blit(Background, 0, 0, &up_part);
+
 	App->renderer->Blit(ball_texture, ball_position.x, ball_position.y);
 	App->renderer->Blit(balk_texture, balk_poisiton.x, balk_poisiton.y);
+
+	if (StartBumperActive == true) {
+		App->renderer->Blit(yellowBumper, startBumperPosition.x, startBumperPosition.y);
+		StartBumper->body->SetActive(true);
+	}
+	else StartBumper->body->SetActive(false);
+
+	if (changeCircle1Colore == true) {
+		App->renderer->Blit(blueBumper, 118, 170);
+	}
+	else App->renderer->Blit(redBumper, 118, 170);
+
+	App->renderer->Blit(redBumper, 178, 170);
+
+	App->renderer->Blit(redBumper, 238, 170);
+
+	App->renderer->Blit(redBumper, 298, 170);
+
+	App->renderer->Blit(redBumper, 118, 240);
+
+	App->renderer->Blit(redBumper, 259, 253);
+
+	App->renderer->Blit(redBumper, 130, 300);
 
 	int x, y;
 
@@ -171,6 +219,19 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyA->type == GAMEOVER)
 	{
 		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
+		StartBumperActive = false;
+		StartSensor->body->SetActive(true);
+	}
+
+	if (bodyA->type == START) {
+
+		StartBumperActive = true;
+		StartSensor->body->SetActive(false);
+
+	}
+
+	if (bodyA->type == REDBUMBPER1) {
+		changeCircle1Colore = true;
 	}
 }
 
