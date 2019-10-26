@@ -147,13 +147,13 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size,bool st
 
 	b2ChainShape shape;
 	b2Vec2* p = new b2Vec2[size / 2];
-
+	
 	for(uint i = 0; i < size / 2; ++i)
 	{
 		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
 		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
 	}
-
+	p->Length();
 	shape.CreateLoop(p, size / 2);
 
 	b2FixtureDef fixture;
@@ -178,21 +178,21 @@ PhysBody* ModulePhysics::CreateFlippers(int x, int y)
 	PhysBody* pivot;
 	b2RevoluteJointDef JointDef;
 
-	flipper = CreateRectangle(x, y, 46, 31);
+	flipper = CreateRectangle(x, y, 20, 10);
 
-	JointDef.upperAngle = 0.1 * b2_pi;
-	JointDef.lowerAngle = -0.1 * b2_pi;
+	JointDef.upperAngle = -0.5 * b2_pi;
+	JointDef.lowerAngle = 0.1 * b2_pi;
 
-	pivot = CreateCircle(x, y, 5);
-	JointDef.localAnchorB = { PIXEL_TO_METERS(-30),PIXEL_TO_METERS(0) };
-	JointDef.motorSpeed = -20;
+	pivot = CreateCircle(x, y, 5, true);
+	JointDef.localAnchorB = { PIXEL_TO_METERS(-17),PIXEL_TO_METERS(-10) };
+	JointDef.motorSpeed = 20;
 
 
 	JointDef.bodyA = pivot->body;
 	JointDef.bodyB = flipper->body;
 	JointDef.collideConnected = false;
 	JointDef.enableMotor = true;
-	JointDef.maxMotorTorque = 500;
+	JointDef.maxMotorTorque = 500.0f;
 	JointDef.enableLimit = true;
 
 	world->CreateJoint(&JointDef);

@@ -29,12 +29,21 @@ public:
 
 	//Colliders
 	PhysBody* backgroundphys;
+	PhysBody* leftStartWall;
 	PhysBody* leftBigWall;
 	PhysBody* leftMediumWall;
 	PhysBody* leftLittleWall;
+	PhysBody* LeftExtraWall;
 	PhysBody* rightBigWall;
 	PhysBody* rightMediumWall;
 	PhysBody* rightLittleWall;
+	PhysBody* rightExtraSmallWall;
+	PhysBody* plat1;
+	PhysBody* plat2;
+	PhysBody* plat3;
+	PhysBody* plat4;
+
+
 	PhysBody* ball;
 	PhysBody* Balk;
 	PhysBody* flipper1;
@@ -53,6 +62,8 @@ public:
 	SDL_Rect down_part;
 	SDL_Rect bigRightFlipper;
 
+
+	b2MouseJoint* balk_joint;
 
 	
 };

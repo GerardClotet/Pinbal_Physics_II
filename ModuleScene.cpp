@@ -32,20 +32,29 @@ bool ModuleScene::Start()
 	map_Sprites = App->textures->Load("pinball/Start Barrier.png");
 
 	//Colliders
-	backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
-	//leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
-	/*leftMediumWall = App->physics->CreateChain(0, 0, LeftMediumWall, 16, true);
+
+
+	backgroundphys = App->physics->CreateChain(0, 0, Board, 68, true);
+	leftStartWall = App->physics->CreateChain(0, 0, LeftStartWall, 14, true);	//leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
+	/*leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
+	leftMediumWall = App->physics->CreateChain(0, 0, LeftMediumWall, 16, true);
 	leftLittleWall = App->physics->CreateChain(0, 0, LeftLittleWall, 22, true);
 
-	rightBigWall = App->physics->CreateChain(0, 0, RightBigWall, 2, true);
+	rightBigWall = App->physics->CreateChain(0, 0, RightBigWall, 10, true);
 	rightMediumWall = App->physics->CreateChain(0, 0, RightMediumWall, 14, true);
-	rightLittleWall = App->physics->CreateChain(0, 0, RightSmallWall, 14, true);*/
+	rightLittleWall = App->physics->CreateChain(0, 0, RightSmallWall, 14, true);
+*/
+	rightExtraSmallWall = App->physics->CreateChain(0, 0, RightExtraSmallWall, 22, true);
+	plat1 = App->physics->CreateChain(0, 0, Plat1, 18, true);
+	plat2 = App->physics->CreateChain(0, 0, Plat2, 18, true);
+	plat3 = App->physics->CreateChain(0, 0, Plat3, 18, true);
+	plat4 = App->physics->CreateChain(0, 0, Plat4, 42, true);
 
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
 
 	//Ball def
-	ball = App->physics->CreateCircle(425, 16, 8);//Position only ajusted to x axis because impluse bige is not implemented yet
+	ball = App->physics->CreateCircle(424, 620, 8);
 	ball->body->SetBullet(true);
 	ball->listener = this;
 
@@ -56,11 +65,14 @@ bool ModuleScene::Start()
 	def.bodyA = App->physics->ground;
 	def.bodyB = Balk->body;
 
-	//backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
+	def.target = { PIXEL_TO_METERS(425), PIXEL_TO_METERS(640) };
+	def.dampingRatio = 2.0f;
+	def.maxForce = 1000.0f * Balk->body->GetMass();
+	balk_joint = (b2MouseJoint*)App->physics->world->CreateJoint(&def);
 
 	//flippers
 
-	flipper1 = App->physics->CreateFlippers(100, 50);
+	flipper1 = App->physics->CreateFlippers(200, 160);
 	return ret;
 }
 
@@ -78,6 +90,16 @@ update_status ModuleScene::Update()
 	flipper1->GetPosition(x, y);
 	App->renderer->Blit(map_Sprites, x, y, &bigRightFlipper, 1.0f, flipper1->GetRotation());
 	//Player Controls
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
+		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(735) });
+		balk_joint->SetFrequency(1.0f);
+
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(635) });
+		balk_joint->SetFrequency(20.0f);
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
