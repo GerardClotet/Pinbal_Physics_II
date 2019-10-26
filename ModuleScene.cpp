@@ -22,6 +22,8 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Start()
 {
 	bool ret = true;
+	App->renderer->camera.x = App->renderer->camera.y = 0;
+
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
 
@@ -90,6 +92,12 @@ bool ModuleScene::Start()
 	ball->body->SetBullet(true);
 	ball->listener = this;
 
+	ball2 = App->physics->CreateCircle(340, 245, 7);
+	ball2->type = BALL2;
+	ball2->body->SetBullet(true);
+	ball2->listener = this;
+	ball2->body->SetActive(false);
+
 	//Balk that impluses the ball
 	Balk = App->physics->CreateRectangle(425, 664, 8, 46);
 	Balk->type = BALK;
@@ -102,6 +110,9 @@ bool ModuleScene::Start()
 
 	StartSensor = App->physics->CreateRectangleSensor(410, 350, 44, 10, ball->listener, true);
 	StartSensor->type = START;
+
+	DropRectangleBall = App->physics->CreateRectangleSensor(345, 260, 44, 10, ball->listener, true);
+	DropRectangleBall->type = SBALL;
 
 	//Bumpers
 	StartBumper = App->physics->CreateChain(0, 0, StartYellowBumper, 10, true);
@@ -173,7 +184,19 @@ update_status ModuleScene::Update()
 	if (changeCircle7Colore == false)App->renderer->Blit(redBumper, 130, 300);
 
 
+
 	int x, y;
+	ball2->GetPosition(x, y);
+	if (SecondBallActive == true)
+	{
+		ball2->body->SetActive(true);
+		App->renderer->Blit(ball_texture, x, y);
+		DropRectangleBall->body->SetActive(false);
+	}
+	else {
+		ball2->body->SetActive(false);
+		DropRectangleBall->body->SetActive(true);
+	}
 
 	//bliting flippers
 	flipperBigRight->GetPosition(x, y);
@@ -230,11 +253,19 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	changeCircle5Colore = false;
 	changeCircle6Colore = false;
 	changeCircle7Colore = false;
-	if (bodyA->type == GAMEOVER)
+
+	if (bodyB->type == BALL && bodyA->type == GAMEOVER)
 	{
 		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
+
 		StartBumperActive = false;
 		StartSensor->body->SetActive(true);
+	}
+	if (bodyB->type == BALL2 && bodyA->type == GAMEOVER) {
+
+		ball2->body->SetTransform({ PIXEL_TO_METERS(340), PIXEL_TO_METERS(245) }, ball->GetRotation());
+		SecondBallActive = false;
+
 	}
 
 	if (bodyA->type == START) {

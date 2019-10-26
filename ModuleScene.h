@@ -46,6 +46,7 @@ public:
 	PhysBody* plat3;
 	PhysBody* plat4;
 	PhysBody* ball;
+	PhysBody* ball2;
 	PhysBody* Balk;
 	PhysBody* flipperBigRight;
 	PhysBody* flipperBigLeft;
@@ -57,6 +58,7 @@ public:
 	PhysBody* circlesBumper[7];
 	PhysBody* yellowRight;
 	PhysBody* yellowLeft;
+	PhysBody* DropRectangleBall;
 
 	iPoint ball_position;
 	iPoint balk_poisiton;
@@ -88,7 +90,8 @@ public:
 	bool changeCircle5Colore = false;
 	bool changeCircle6Colore = false;
 	bool changeCircle7Colore = false;
-	
+	bool SecondBallActive = true;
+
 };
 
 #endif
