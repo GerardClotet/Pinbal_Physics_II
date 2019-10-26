@@ -4,6 +4,7 @@
 
 class Application;
 class PhysBody;
+class b2Contact;
 
 class Module
 {

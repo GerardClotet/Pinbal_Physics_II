@@ -12,7 +12,7 @@ class ModuleAudio;
 class ModulePlayer;
 class ModuleSceneIntro;
 class ModulePhysics;
-
+class ModuleScene;
 class Application
 {
 public:
@@ -24,7 +24,7 @@ public:
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
-
+	ModuleScene* scene;
 private:
 
 	p2List<Module*> list_modules;
