@@ -82,6 +82,8 @@ public:
 	// Mouse joint
 	b2MouseJoint* mouse_joint;
 	b2Body* body_clicked;
+	Type type;
+
 private:
 
 	bool debug;

@@ -78,6 +78,7 @@ public:
 
 	SDL_Rect up_part;
 	SDL_Rect down_part;
+	SDL_Rect arraynum;
 
 
 	b2MouseJoint* balk_joint;
@@ -90,7 +91,7 @@ public:
 	bool changeCircle5Colore = false;
 	bool changeCircle6Colore = false;
 	bool changeCircle7Colore = false;
-	bool SecondBallActive = true;
+	bool SecondBallActive = false;
 
 };
 

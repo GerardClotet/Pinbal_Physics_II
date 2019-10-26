@@ -12,6 +12,7 @@ class ModuleAudio;
 class ModulePlayer;
 class ModulePhysics;
 class ModuleScene;
+class ModuleScore;
 class Application
 {
 public:
@@ -23,6 +24,7 @@ public:
 	ModulePlayer* player;
 	ModulePhysics* physics;
 	ModuleScene* scene;
+	ModuleScore* score;
 private:
 
 	p2List<Module*> list_modules;

@@ -7,7 +7,7 @@
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 #include "ChainVertex.h"
-
+#include "ModuleScore.h"
 
 ModuleScene::ModuleScene(Application* app, bool start_enable) : Module(app, start_enable)
 {
@@ -26,6 +26,7 @@ bool ModuleScene::Start()
 
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
+	arraynum = { 0,1,185,21 };
 
 	Background = App->textures->Load("pinball/board.png");
 	ball_texture = App->textures->Load("pinball/ball.png");
@@ -234,6 +235,7 @@ update_status ModuleScene::Update()
 		flipperLittleLeft->body->ApplyTorque(-190, true);
 	}
 
+
 	return UPDATE_CONTINUE;
 }
 
@@ -277,36 +279,44 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	if (bodyB->type == REDBUMBPER1) {
 		changeCircle1Colore = true;
+		App->score->Increase(+100);
 
 
 	}
 	if (bodyB->type == REDBUMBPER2) {
 		changeCircle2Colore = true;
+		App->score->Increase(+100);
 
 
 	}
 	if (bodyB->type == REDBUMBPER3) {
 		changeCircle3Colore = true;
+		App->score->Increase(+100);
 
 
 	}
 	if (bodyB->type == REDBUMBPER4) {
 		changeCircle4Colore = true;
 
+		App->score->Increase(+100);
 
 	}
 	if (bodyB->type == REDBUMBPER5) {
 		changeCircle5Colore = true;
+		App->score->Increase(+100);
 
 
 	}
 	if (bodyB->type == REDBUMBPER6) {
 		changeCircle6Colore = true;
+		App->score->Increase(+100);
 
 
 	}
 	if (bodyB->type == REDBUMBPER7) {
 		changeCircle7Colore = true;
+		App->score->Increase(+100);
+
 	}
 }
 
