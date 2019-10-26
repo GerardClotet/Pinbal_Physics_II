@@ -39,6 +39,7 @@ bool ModuleScene::Start()
 	yellowBumper = App->textures->Load("pinball/yellowBumper.png");
 	redBumper = App->textures->Load("pinball/redBumper.png");
 	blueBumper = App->textures->Load("pinball/blueBumper.png");
+	reStart = App->textures->Load("pinball/restart.png");
 
 	//Loading Audio
 	flipper_fx = App->audio->LoadFx("pinball/audio/fx/flipper_audio.wav");
@@ -173,6 +174,7 @@ bool ModuleScene::Start()
 	jointDef.enableMotor = true;
 	jointDef.maxMotorTorque = 100.0f;
 	jointDef.motorSpeed = 5.0f;*/
+	lives = 5;
 
 	return ret;
 }
@@ -187,92 +189,102 @@ update_status ModuleScene::Update()
 
 	App->renderer->Blit(ball_texture, ball_position.x, ball_position.y);
 	App->renderer->Blit(balk_texture, balk_poisiton.x, balk_poisiton.y);
-
-	if (StartBumperActive == true) {
-		StartBumper->body->SetActive(true);
-		App->renderer->Blit(yellowBumper, startBumperPosition.x, startBumperPosition.y);
-
-	}
-	else StartBumper->body->SetActive(false);
-
-	if (changeCircle1Colore == true)App->renderer->Blit(blueBumper, 118, 170);
-	if (changeCircle1Colore == false)App->renderer->Blit(redBumper, 118, 170);
-
-	if (changeCircle2Colore == true)App->renderer->Blit(blueBumper, 178, 170);
-	if (changeCircle2Colore == false)App->renderer->Blit(redBumper, 178, 170);
-
-	if (changeCircle3Colore == true)App->renderer->Blit(blueBumper, 238, 170);
-	if (changeCircle3Colore == false)App->renderer->Blit(redBumper, 238, 170);
-
-	if (changeCircle4Colore == true)App->renderer->Blit(blueBumper, 298, 170);
-	if (changeCircle4Colore == false)App->renderer->Blit(redBumper, 298, 170);
-
-	if (changeCircle5Colore == true)App->renderer->Blit(blueBumper, 118, 240);
-	if (changeCircle5Colore == false)App->renderer->Blit(redBumper, 118, 240);
-
-	if (changeCircle6Colore == true)App->renderer->Blit(blueBumper, 259, 253);
-	if (changeCircle6Colore == false)App->renderer->Blit(redBumper, 259, 253);
-
-	if (changeCircle7Colore == true)App->renderer->Blit(blueBumper, 130, 300);
-	if (changeCircle7Colore == false)App->renderer->Blit(redBumper, 130, 300);
-
-
-
-	int x, y;
-	ball2->GetPosition(x, y);
-	if (SecondBallActive == true)
+	if (!DeadPlayer)
 	{
-		ball2->body->SetActive(true);
-		App->renderer->Blit(ball_texture, x, y);
-		DropRectangleBall->body->SetActive(false);
+		if (StartBumperActive == true) {
+			StartBumper->body->SetActive(true);
+			App->renderer->Blit(yellowBumper, startBumperPosition.x, startBumperPosition.y);
+
+		}
+		else StartBumper->body->SetActive(false);
+
+		if (changeCircle1Colore == true)App->renderer->Blit(blueBumper, 118, 170);
+		if (changeCircle1Colore == false)App->renderer->Blit(redBumper, 118, 170);
+
+		if (changeCircle2Colore == true)App->renderer->Blit(blueBumper, 178, 170);
+		if (changeCircle2Colore == false)App->renderer->Blit(redBumper, 178, 170);
+
+		if (changeCircle3Colore == true)App->renderer->Blit(blueBumper, 238, 170);
+		if (changeCircle3Colore == false)App->renderer->Blit(redBumper, 238, 170);
+
+		if (changeCircle4Colore == true)App->renderer->Blit(blueBumper, 298, 170);
+		if (changeCircle4Colore == false)App->renderer->Blit(redBumper, 298, 170);
+
+		if (changeCircle5Colore == true)App->renderer->Blit(blueBumper, 118, 240);
+		if (changeCircle5Colore == false)App->renderer->Blit(redBumper, 118, 240);
+
+		if (changeCircle6Colore == true)App->renderer->Blit(blueBumper, 259, 253);
+		if (changeCircle6Colore == false)App->renderer->Blit(redBumper, 259, 253);
+
+		if (changeCircle7Colore == true)App->renderer->Blit(blueBumper, 130, 300);
+		if (changeCircle7Colore == false)App->renderer->Blit(redBumper, 130, 300);
+
+
+
+		int x, y;
+		ball2->GetPosition(x, y);
+		if (SecondBallActive == true)
+		{
+			ball2->body->SetActive(true);
+			App->renderer->Blit(ball_texture, x, y);
+			DropRectangleBall->body->SetActive(false);
+		}
+		else {
+			ball2->body->SetActive(false);
+			DropRectangleBall->body->SetActive(true);
+		}
+
+		//bliting flippers
+		flipperBigRight->GetPosition(x, y);
+		App->renderer->Blit(bigrightflipper, x, y, NULL, 1.0f, flipperBigRight->GetRotation(), false);
+
+		flipperBigLeft->GetPosition(x, y);
+		App->renderer->Blit(bigleftflipper, x, y, NULL, 1.0f, flipperBigLeft->GetRotation(), true); //take true out to avoid vibration
+
+		flipperLittleRight->GetPosition(x, y);
+		App->renderer->Blit(littlerigthflipper, x, y, NULL, 1.0f, flipperLittleRight->GetRotation(), false);
+
+		flipperLittleLeft->GetPosition(x, y);
+		App->renderer->Blit(littleleftflipper, x, y, NULL, 1.0f, flipperLittleLeft->GetRotation(), true);
+
+		//Player Controls
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN))
+		{
+			App->audio->PlayFx(flipper_fx, 0);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
+			balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(675) });
+			balk_joint->SetFrequency(1.0f);
+
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+			balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(635) });
+			balk_joint->SetFrequency(10.0f);
+			App->audio->PlayFx(balk_fx, 0);
+
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		{
+			flipperBigRight->body->ApplyTorque(200, true);
+			flipperLittleRight->body->ApplyTorque(190, true);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		{
+			flipperBigLeft->body->ApplyTorque(-200, true);
+			flipperLittleLeft->body->ApplyTorque(-190, true);
+		}
+
 	}
 	else {
-		ball2->body->SetActive(false);
-		DropRectangleBall->body->SetActive(true);
+		App->renderer->Blit(reStart, 0, 0);
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		{
+
+			DeadPlayer = false;
+			lives = 5;
+		}
 	}
-
-	//bliting flippers
-	flipperBigRight->GetPosition(x, y);
-	App->renderer->Blit(bigrightflipper, x, y, NULL, 1.0f, flipperBigRight->GetRotation(), false);
-
-	flipperBigLeft->GetPosition(x, y);
-	App->renderer->Blit(bigleftflipper, x, y, NULL, 1.0f, flipperBigLeft->GetRotation(), true); //take true out to avoid vibration
-
-	flipperLittleRight->GetPosition(x, y);
-	App->renderer->Blit(littlerigthflipper, x, y, NULL, 1.0f, flipperLittleRight->GetRotation(), false);
-
-	flipperLittleLeft->GetPosition(x, y);
-	App->renderer->Blit(littleleftflipper, x, y, NULL, 1.0f, flipperLittleLeft->GetRotation(), true);
-
-	//Player Controls
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN))
-	{
-		App->audio->PlayFx(flipper_fx, 0);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
-		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(675) });
-		balk_joint->SetFrequency(1.0f);
-
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
-		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(635) });
-		balk_joint->SetFrequency(10.0f);
-		App->audio->PlayFx(balk_fx, 0);
-
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	{
-		flipperBigRight->body->ApplyTorque(200, true);
-		flipperLittleRight->body->ApplyTorque(190, true);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	{
-		flipperBigLeft->body->ApplyTorque(-200, true);
-		flipperLittleLeft->body->ApplyTorque(-190, true);
-	}
-
-
 	return UPDATE_CONTINUE;
 }
 
@@ -292,18 +304,19 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	changeCircle5Colore = false;
 	changeCircle6Colore = false;
 	changeCircle7Colore = false;
-
 	if (bodyB->type == BALL && bodyA->type == GAMEOVER)
 	{
 		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
 		App->audio->PlayFx(dead_ball_fx, 0);
 		StartBumperActive = false;
 		StartSensor->body->SetActive(true);
+		lives -= 0.5;
 	}
 	if (bodyB->type == BALL2 && bodyA->type == GAMEOVER) {
 
 		ball2->body->SetTransform({ PIXEL_TO_METERS(340), PIXEL_TO_METERS(245) }, ball->GetRotation());
 		App->audio->PlayFx(dead_ball_fx, 0);
+		lives -= 0.5;
 
 		SecondBallActive = false;
 
@@ -364,5 +377,8 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		App->audio->PlayFx(bumper_fx, 0);
 
 	}
+
+	if (lives == 0) DeadPlayer = true;
+
 }
 

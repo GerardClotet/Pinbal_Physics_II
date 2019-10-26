@@ -27,6 +27,7 @@ public:
 	bool CleanUp();
 
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void GameOver();
 
 public:
 
@@ -77,7 +78,7 @@ public:
 	SDL_Texture* redBumper = nullptr;
 	SDL_Texture* blueBumper = nullptr;
 	SDL_Texture* yellowBumper = nullptr;
-
+	SDL_Texture* reStart = nullptr;
 	SDL_Rect up_part;
 	SDL_Rect down_part;
 	SDL_Rect arraynum;
@@ -94,7 +95,10 @@ public:
 	bool changeCircle6Colore = false;
 	bool changeCircle7Colore = false;
 	bool SecondBallActive = false;
-
+	bool ball1Dead = false;
+	bool ball2Dead = false;
+	float lives = 0;
+	bool DeadPlayer = false;
 	uint flipper_fx;
 	uint balk_fx;
 	uint bumper_fx;
