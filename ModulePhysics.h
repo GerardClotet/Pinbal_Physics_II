@@ -49,7 +49,8 @@ public:
 	PhysBody* CreateChain(int x, int y, int* points, int size, bool static_body = false);
 
 
-	PhysBody* CreateFlippers(int x, int y);
+	PhysBody* CreateFlippers(int x, int y, bool flipXaxis);
+	PhysBody* CreateLittleFlippers(int x, int y, bool flipXaxis);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);

@@ -172,33 +172,86 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size,bool st
 }
 
 
-PhysBody* ModulePhysics::CreateFlippers(int x, int y)
+PhysBody* ModulePhysics::CreateFlippers(int x, int y, bool flipXaxis)
 {
 	PhysBody* flipper;
 	PhysBody* pivot;
 	b2RevoluteJointDef JointDef;
 
-	flipper = CreateRectangle(x, y, 20, 10);
-
-	JointDef.upperAngle = -0.5 * b2_pi;
-	JointDef.lowerAngle = 0.1 * b2_pi;
-
-	pivot = CreateCircle(x, y, 5, true);
-	JointDef.localAnchorB = { PIXEL_TO_METERS(-17),PIXEL_TO_METERS(-10) };
-	JointDef.motorSpeed = 20;
+	if (!flipXaxis)
+	{
+		pivot = CreateCircle(x, y, 3, true); //left
+		JointDef.localAnchorB = { PIXEL_TO_METERS(-26),PIXEL_TO_METERS(-7) };
+		JointDef.motorSpeed = 20;
+		flipper = CreateRectangle(x, y, 48, 15, false);
+		JointDef.upperAngle = 0.1 * b2_pi;
+		JointDef.lowerAngle = -0.1 * b2_pi;  //max push
+	}
+	else
+	{
+		pivot = CreateCircle(x, y, 3, true); //right
+		JointDef.localAnchorB = { PIXEL_TO_METERS(25),PIXEL_TO_METERS(-10) };
+		JointDef.motorSpeed = -20;
+		flipper = CreateRectangle(x, y, 45, 15, false);
+		JointDef.upperAngle = 0.1 * b2_pi; //max push
+		JointDef.lowerAngle = -0.1 * b2_pi;
+	}
 
 
 	JointDef.bodyA = pivot->body;
 	JointDef.bodyB = flipper->body;
 	JointDef.collideConnected = false;
-	JointDef.enableMotor = true;
-	JointDef.maxMotorTorque = 500.0f;
+	JointDef.enableMotor = false;
+	JointDef.maxMotorTorque = 250.0f;
 	JointDef.enableLimit = true;
 
 	world->CreateJoint(&JointDef);
 
 	return flipper;
 
+}
+
+PhysBody* ModulePhysics::CreateLittleFlippers(int x, int y, bool flipXaxis)
+{
+	PhysBody* flipper;
+	PhysBody* pivot;
+	b2RevoluteJointDef JointDef;
+
+
+	if (!flipXaxis)
+	{
+		pivot = CreateCircle(x, y, 2, true); //left
+		JointDef.localAnchorB = { PIXEL_TO_METERS(-24),PIXEL_TO_METERS(-6) };
+		JointDef.motorSpeed = 10;
+		flipper = CreateRectangle(x, y, 42, 13, false);
+		JointDef.upperAngle = 0.1 * b2_pi;
+		JointDef.lowerAngle = -0.1 * b2_pi;
+	}
+	else
+	{
+		pivot = CreateCircle(x, y, 2, true); //right
+		JointDef.localAnchorB = { PIXEL_TO_METERS(25),PIXEL_TO_METERS(-6) };
+		JointDef.motorSpeed = -10;
+		flipper = CreateRectangle(x, y, 44, 12, false);
+		JointDef.upperAngle = 0.1 * b2_pi;
+		JointDef.lowerAngle = -0.1 * b2_pi;
+	}
+
+
+
+
+
+	JointDef.bodyA = pivot->body;
+	JointDef.bodyB = flipper->body;
+	JointDef.collideConnected = true;
+	JointDef.enableMotor = false;
+	JointDef.maxMotorTorque = 200.0f;
+
+	JointDef.enableLimit = true;
+
+	world->CreateJoint(&JointDef);
+
+	return flipper;
 }
 // 
 update_status ModulePhysics::PostUpdate()

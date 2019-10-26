@@ -24,26 +24,28 @@ bool ModuleScene::Start()
 	bool ret = true;
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
-	bigRightFlipper = { 283,249,46,31 };
 
 	Background = App->textures->Load("pinball/board.png");
 	ball_texture = App->textures->Load("pinball/ball.png");
 	balk_texture = App->textures->Load("pinball/balk.png");
-	map_Sprites = App->textures->Load("pinball/Start Barrier.png");
+	bigleftflipper = App->textures->Load("pinball/bigflipperleft.png");
+	bigrightflipper = App->textures->Load("pinball/flipper.png");
+	littleleftflipper = App->textures->Load("pinball/littleflipperLeft.png");
+	littlerigthflipper = App->textures->Load("pinball/littleflipperRight.png");
 
 	//Colliders
 
 
 	backgroundphys = App->physics->CreateChain(0, 0, Board, 68, true);
-	leftStartWall = App->physics->CreateChain(0, 0, LeftStartWall, 14, true);	//leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
-	/*leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
+	leftStartWall = App->physics->CreateChain(0, 0, LeftStartWall, 14, true);	
+	leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
 	leftMediumWall = App->physics->CreateChain(0, 0, LeftMediumWall, 16, true);
 	leftLittleWall = App->physics->CreateChain(0, 0, LeftLittleWall, 22, true);
 
 	rightBigWall = App->physics->CreateChain(0, 0, RightBigWall, 10, true);
 	rightMediumWall = App->physics->CreateChain(0, 0, RightMediumWall, 14, true);
 	rightLittleWall = App->physics->CreateChain(0, 0, RightSmallWall, 14, true);
-*/
+
 	rightExtraSmallWall = App->physics->CreateChain(0, 0, RightExtraSmallWall, 22, true);
 	plat1 = App->physics->CreateChain(0, 0, Plat1, 18, true);
 	plat2 = App->physics->CreateChain(0, 0, Plat2, 18, true);
@@ -54,7 +56,7 @@ bool ModuleScene::Start()
 	down_part = { 0,757,483,115 };
 
 	//Ball def
-	ball = App->physics->CreateCircle(424, 620, 8);
+	ball = App->physics->CreateCircle(424, 620, 7);
 	ball->body->SetBullet(true);
 	ball->listener = this;
 
@@ -72,7 +74,12 @@ bool ModuleScene::Start()
 
 	//flippers
 
-	flipper1 = App->physics->CreateFlippers(200, 160);
+	flipperBigRight = App->physics->CreateFlippers(283, 612, true); //right
+	flipperBigLeft = App->physics->CreateFlippers(172, 615, false); //left y615
+
+	flipperLittleRight = App->physics->CreateLittleFlippers(295, 558, true);//right
+	flipperLittleLeft = App->physics->CreateLittleFlippers(160, 563, false);//left
+
 	return ret;
 }
 
@@ -87,8 +94,20 @@ update_status ModuleScene::Update()
 	App->renderer->Blit(balk_texture, balk_poisiton.x, balk_poisiton.y);
 
 	int x, y;
-	flipper1->GetPosition(x, y);
-	App->renderer->Blit(map_Sprites, x, y, &bigRightFlipper, 1.0f, flipper1->GetRotation());
+
+	//bliting flippers
+	flipperBigRight->GetPosition(x, y);
+	App->renderer->Blit(bigrightflipper, x, y, NULL, 1.0f, flipperBigRight->GetRotation(), false);
+
+	flipperBigLeft->GetPosition(x, y);
+	App->renderer->Blit(bigleftflipper, x, y, NULL, 1.0f, flipperBigLeft->GetRotation(), true); //take true out to avoid vibration
+
+	flipperLittleRight->GetPosition(x, y);
+	App->renderer->Blit(littlerigthflipper, x, y, NULL, 1.0f, flipperLittleRight->GetRotation(), false);
+
+	flipperLittleLeft->GetPosition(x, y);
+	App->renderer->Blit(littleleftflipper, x, y, NULL, 1.0f, flipperLittleLeft->GetRotation(), true);
+
 	//Player Controls
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
@@ -103,7 +122,13 @@ update_status ModuleScene::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		flipper1->body->ApplyTorque(500, true);
+		flipperBigRight->body->ApplyTorque(200, true);
+		flipperLittleRight->body->ApplyTorque(190, true);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	{
+		flipperBigLeft->body->ApplyTorque(-200, true);
+		flipperLittleLeft->body->ApplyTorque(-190, true);
 	}
 
 	return UPDATE_CONTINUE;

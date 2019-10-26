@@ -52,15 +52,19 @@ public:
 	iPoint ball_position;
 	iPoint balk_poisiton;
 
-	SDL_Texture* map_Sprites = nullptr;
 
 	SDL_Texture* Background = nullptr;
 	SDL_Texture* ball_texture = nullptr;
 	SDL_Texture* balk_texture = nullptr;
 
+
+	SDL_Texture* bigleftflipper = nullptr;
+	SDL_Texture* bigrightflipper = nullptr;
+	SDL_Texture* littlerigthflipper = nullptr;
+	SDL_Texture* littleleftflipper = nullptr;
+
 	SDL_Rect up_part;
 	SDL_Rect down_part;
-	SDL_Rect bigRightFlipper;
 
 
 	b2MouseJoint* balk_joint;
