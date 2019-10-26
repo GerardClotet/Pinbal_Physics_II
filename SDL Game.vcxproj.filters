@@ -59,6 +59,9 @@
     <ClInclude Include="ModuleScene.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="ChainVertex.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
