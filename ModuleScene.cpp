@@ -36,49 +36,73 @@ bool ModuleScene::Start()
 	//Colliders
 
 
-	backgroundphys = App->physics->CreateChain(0, 0, Board, 68, true);
-	leftStartWall = App->physics->CreateChain(0, 0, LeftStartWall, 14, true);	
+//Colliders
+	backgroundphys = App->physics->CreateChain(0, 0, Board, 82, true);
+	backgroundphys->type = COLLIDER;
 	leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
+	leftBigWall->type = COLLIDER;
 	leftMediumWall = App->physics->CreateChain(0, 0, LeftMediumWall, 16, true);
+	leftMediumWall->type = COLLIDER;
 	leftLittleWall = App->physics->CreateChain(0, 0, LeftLittleWall, 22, true);
-
+	leftLittleWall->type = COLLIDER;
 	rightBigWall = App->physics->CreateChain(0, 0, RightBigWall, 10, true);
+	rightBigWall->type = COLLIDER;
 	rightMediumWall = App->physics->CreateChain(0, 0, RightMediumWall, 14, true);
+	rightMediumWall->type = COLLIDER;
 	rightLittleWall = App->physics->CreateChain(0, 0, RightSmallWall, 14, true);
-
+	rightLittleWall->type = COLLIDER;
 	rightExtraSmallWall = App->physics->CreateChain(0, 0, RightExtraSmallWall, 22, true);
+	rightExtraSmallWall->type = COLLIDER;
 	plat1 = App->physics->CreateChain(0, 0, Plat1, 18, true);
+	plat1->type = PLATFORM;
 	plat2 = App->physics->CreateChain(0, 0, Plat2, 18, true);
+	plat2->type = PLATFORM;
 	plat3 = App->physics->CreateChain(0, 0, Plat3, 18, true);
+	plat3->type = PLATFORM;
 	plat4 = App->physics->CreateChain(0, 0, Plat4, 42, true);
+	plat4->type = PLATFORM;
+
+
 
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
 
 	//Ball def
 	ball = App->physics->CreateCircle(424, 620, 7);
+	ball->type = BALL;
 	ball->body->SetBullet(true);
 	ball->listener = this;
 
 	//Balk that impluses the ball
-	Balk = App->physics->CreateRectangle(425, 635, 8, 46);
+	Balk = App->physics->CreateRectangle(425, 664, 8, 46);
+	Balk->type = BALK;
+	Balk->body->SetFixedRotation(true);
+
+	//Rectangle sensor
+
+	GameOverSensor = App->physics->CreateRectangleSensor(242, 840, 483, 300, ball->listener, true);
+	GameOverSensor->type = GAMEOVER;
 
 	b2MouseJointDef def;
 	def.bodyA = App->physics->ground;
 	def.bodyB = Balk->body;
 
 	def.target = { PIXEL_TO_METERS(425), PIXEL_TO_METERS(640) };
-	def.dampingRatio = 2.0f;
-	def.maxForce = 1000.0f * Balk->body->GetMass();
+	def.dampingRatio = 0.06f;
+	def.maxForce = 100000.0f * Balk->body->GetMass();
 	balk_joint = (b2MouseJoint*)App->physics->world->CreateJoint(&def);
 
 	//flippers
 
 	flipperBigRight = App->physics->CreateFlippers(283, 612, true); //right
+	flipperBigRight->type = FLIPPER;
 	flipperBigLeft = App->physics->CreateFlippers(172, 615, false); //left y615
 
+	flipperBigLeft->type = FLIPPER;
 	flipperLittleRight = App->physics->CreateLittleFlippers(295, 558, true);//right
+	flipperLittleRight->type = FLIPPER;
 	flipperLittleLeft = App->physics->CreateLittleFlippers(160, 563, false);//left
+	flipperLittleLeft->type = FLIPPER;
 
 	return ret;
 }
@@ -111,13 +135,13 @@ update_status ModuleScene::Update()
 	//Player Controls
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
-		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(735) });
+		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(675) });
 		balk_joint->SetFrequency(1.0f);
 
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(635) });
-		balk_joint->SetFrequency(20.0f);
+		balk_joint->SetFrequency(10.0f);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
@@ -138,5 +162,15 @@ bool ModuleScene::CleanUp()
 {
 
 	return true;
+}
+
+void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+{
+	int x, y;
+
+	if (bodyA->type == GAMEOVER)
+	{
+		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
+	}
 }
 

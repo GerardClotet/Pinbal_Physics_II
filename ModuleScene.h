@@ -25,6 +25,9 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+
 public:
 
 	//Colliders
@@ -46,8 +49,15 @@ public:
 
 	PhysBody* ball;
 	PhysBody* Balk;
-	PhysBody* flipper1;
-	PhysBody* flippers2;
+
+
+	PhysBody* flipperBigRight;
+	PhysBody* flipperBigLeft;
+	PhysBody* flipperLittleLeft;
+	PhysBody* flipperLittleRight;
+
+	PhysBody* GameOverSensor;
+
 
 	iPoint ball_position;
 	iPoint balk_poisiton;
