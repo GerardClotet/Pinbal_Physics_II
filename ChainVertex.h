@@ -32,7 +32,7 @@ int Board[56] = {
 	40, 688
 };
 
-int leftBigWall[14] = {
+int LeftBigWall[14] = {
 	83, 412,
 	83, 547,
 	171, 611,
@@ -42,7 +42,7 @@ int leftBigWall[14] = {
 	83, 412
 };
 
-int leftMediuWall[16] = {
+int LeftMediumWall[16] = {
 	105, 446,
 	107, 527,
 	152, 555,
@@ -53,7 +53,7 @@ int leftMediuWall[16] = {
 	105, 446
 };
 
-int leftLittleWall[22] = {
+int LeftLittleWall[22] = {
 	140, 476,
 	132, 481,
 	131, 511,
@@ -68,7 +68,30 @@ int leftLittleWall[22] = {
 };
 
 
+int RightBigWall[2] = {
+	318, 719
+};
 
+
+int RightMediumWall[14] = {
+	284, 606,
+	383, 550,
+	385, 411,
+	378, 411,
+	378, 543,
+	281, 601,
+	284, 606
+};
+
+int RightSmallWall[14] = {
+	305, 552,
+	362, 516,
+	362, 442,
+	354, 442,
+	354, 512,
+	300, 547,
+	305, 552
+};
 
 
 #endif CHAIN_VERTEX

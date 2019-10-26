@@ -26,7 +26,15 @@ public:
 	update_status Update();
 	bool CleanUp();
 public:
+
+	//Colliders
 	PhysBody* backgroundphys;
+	PhysBody* leftBigWall;
+	PhysBody* leftMediumWall;
+	PhysBody* leftLittleWall;
+	PhysBody* rightBigWall;
+	PhysBody* rightMediumWall;
+	PhysBody* rightLittleWall;
 	PhysBody* ball;
 	PhysBody* Balk;
 
@@ -39,6 +47,9 @@ public:
 
 	SDL_Rect up_part;
 	SDL_Rect down_part;
+
+
+	
 };
 
 #endif

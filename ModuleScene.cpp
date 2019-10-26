@@ -29,6 +29,16 @@ bool ModuleScene::Start()
 	ball_texture = App->textures->Load("pinball/ball.png");
 	balk_texture = App->textures->Load("pinball/balk.png");
 
+	//Colliders
+	backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
+	//leftBigWall = App->physics->CreateChain(0, 0, LeftBigWall, 14, true);
+	/*leftMediumWall = App->physics->CreateChain(0, 0, LeftMediumWall, 16, true);
+	leftLittleWall = App->physics->CreateChain(0, 0, LeftLittleWall, 22, true);
+
+	rightBigWall = App->physics->CreateChain(0, 0, RightBigWall, 2, true);
+	rightMediumWall = App->physics->CreateChain(0, 0, RightMediumWall, 14, true);
+	rightLittleWall = App->physics->CreateChain(0, 0, RightSmallWall, 14, true);*/
+
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
 
@@ -37,13 +47,14 @@ bool ModuleScene::Start()
 	ball->body->SetBullet(true);
 	ball->listener = this;
 
-	Balk = App->physics->CreateRectangle(425, 400, 8, 46);
+	//Balk that impluses the ball
+	Balk = App->physics->CreateRectangle(425, 635, 8, 46);
 
 	b2MouseJointDef def;
 	def.bodyA = App->physics->ground;
 	def.bodyB = Balk->body;
 
-	backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
+	//backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
 
 	return ret;
 }
