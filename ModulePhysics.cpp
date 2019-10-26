@@ -171,6 +171,35 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size,bool st
 	return pbody;
 }
 
+
+PhysBody* ModulePhysics::CreateFlippers(int x, int y)
+{
+	PhysBody* flipper;
+	PhysBody* pivot;
+	b2RevoluteJointDef JointDef;
+
+	flipper = CreateRectangle(x, y, 46, 31);
+
+	JointDef.upperAngle = 0.1 * b2_pi;
+	JointDef.lowerAngle = -0.1 * b2_pi;
+
+	pivot = CreateCircle(x, y, 5);
+	JointDef.localAnchorB = { PIXEL_TO_METERS(-30),PIXEL_TO_METERS(0) };
+	JointDef.motorSpeed = -20;
+
+
+	JointDef.bodyA = pivot->body;
+	JointDef.bodyB = flipper->body;
+	JointDef.collideConnected = false;
+	JointDef.enableMotor = true;
+	JointDef.maxMotorTorque = 500;
+	JointDef.enableLimit = true;
+
+	world->CreateJoint(&JointDef);
+
+	return flipper;
+
+}
 // 
 update_status ModulePhysics::PostUpdate()
 {

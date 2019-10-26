@@ -48,6 +48,9 @@ public:
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, Module* listener, bool static_body = false);
 	PhysBody* CreateChain(int x, int y, int* points, int size, bool static_body = false);
 
+
+	PhysBody* CreateFlippers(int x, int y);
+
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
 

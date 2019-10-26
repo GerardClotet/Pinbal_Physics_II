@@ -24,10 +24,12 @@ bool ModuleScene::Start()
 	bool ret = true;
 	up_part = { 0,0,483,689 };
 	down_part = { 0,757,483,115 };
+	bigRightFlipper = { 283,249,46,31 };
 
 	Background = App->textures->Load("pinball/board.png");
 	ball_texture = App->textures->Load("pinball/ball.png");
 	balk_texture = App->textures->Load("pinball/balk.png");
+	map_Sprites = App->textures->Load("pinball/Start Barrier.png");
 
 	//Colliders
 	backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
@@ -56,6 +58,9 @@ bool ModuleScene::Start()
 
 	//backgroundphys = App->physics->CreateChain(0, 0, Board, 56, true);
 
+	//flippers
+
+	flipper1 = App->physics->CreateFlippers(100, 50);
 	return ret;
 }
 
@@ -69,6 +74,15 @@ update_status ModuleScene::Update()
 	App->renderer->Blit(ball_texture, ball_position.x, ball_position.y);
 	App->renderer->Blit(balk_texture, balk_poisiton.x, balk_poisiton.y);
 
+	int x, y;
+	flipper1->GetPosition(x, y);
+	App->renderer->Blit(map_Sprites, x, y, &bigRightFlipper, 1.0f, flipper1->GetRotation());
+	//Player Controls
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	{
+		flipper1->body->ApplyTorque(500, true);
+	}
 
 	return UPDATE_CONTINUE;
 }

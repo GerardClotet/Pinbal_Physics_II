@@ -37,9 +37,13 @@ public:
 	PhysBody* rightLittleWall;
 	PhysBody* ball;
 	PhysBody* Balk;
+	PhysBody* flipper1;
+	PhysBody* flippers2;
 
 	iPoint ball_position;
 	iPoint balk_poisiton;
+
+	SDL_Texture* map_Sprites = nullptr;
 
 	SDL_Texture* Background = nullptr;
 	SDL_Texture* ball_texture = nullptr;
@@ -47,6 +51,7 @@ public:
 
 	SDL_Rect up_part;
 	SDL_Rect down_part;
+	SDL_Rect bigRightFlipper;
 
 
 	
