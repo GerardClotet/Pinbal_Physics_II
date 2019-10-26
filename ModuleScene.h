@@ -26,10 +26,12 @@ public:
 	update_status Update();
 	bool CleanUp();
 public:
+	PhysBody* backgroundphys;
 	PhysBody* ball;
 	PhysBody* Balk;
 
 	iPoint ball_position;
+	iPoint balk_poisiton;
 
 	SDL_Texture* Background = nullptr;
 	SDL_Texture* ball_texture = nullptr;
