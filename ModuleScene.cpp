@@ -28,6 +28,7 @@ bool ModuleScene::Start()
 	down_part = { 0,757,483,115 };
 	arraynum = { 0,1,185,21 };
 
+	//Loading tex
 	Background = App->textures->Load("pinball/board.png");
 	ball_texture = App->textures->Load("pinball/ball.png");
 	balk_texture = App->textures->Load("pinball/balk.png");
@@ -38,6 +39,15 @@ bool ModuleScene::Start()
 	yellowBumper = App->textures->Load("pinball/yellowBumper.png");
 	redBumper = App->textures->Load("pinball/redBumper.png");
 	blueBumper = App->textures->Load("pinball/blueBumper.png");
+
+	//Loading Audio
+	flipper_fx = App->audio->LoadFx("pinball/audio/fx/flipper_audio.wav");
+	balk_fx = App->audio->LoadFx("pinball/audio/fx/balkSound.wav");
+	bumper_fx = App->audio->LoadFx("pinball/audio/fx/bumpersound.wav");
+	spawn_ball_fx = App->audio->LoadFx("pinball/audio/fx/spawnballsound.wav");
+	dead_ball_fx = App->audio->LoadFx("pinball/audio/fx/deadball.wav");
+
+	App->audio->PlayMusic("pinball/audio/music/music.ogg");
 
 //Colliders
 	backgroundphys = App->physics->CreateChain(0, 0, Board, 82, true);
@@ -68,7 +78,7 @@ bool ModuleScene::Start()
 
 	//Circle Bumpers
 
-	circlesBumper[1] = App->physics->CreateCircle(132, 185, 15, true);
+	circlesBumper[1] = App->physics->CreateCircle(130, 185, 15, true);
 	circlesBumper[1]->type = REDBUMBPER1;
 	circlesBumper[1]->body->ApplyAngularImpulse(10.0f, true);
 	circlesBumper[2] = App->physics->CreateCircle(192, 185, 15, true);
@@ -143,6 +153,27 @@ bool ModuleScene::Start()
 	flipperLittleLeft = App->physics->CreateLittleFlippers(160, 563, false);//left
 	flipperLittleLeft->type = FLIPPER;
 
+
+	//Wheel
+	/*Wheel = App->physics->CreateChain(-25, 250, wheel, 86, true);
+	Wheel->body->SetActive(false);
+	WheelPivot = App->physics->CreateCircle(258, 333, 10, false);
+	Wheel->type = SPINNER;
+*/
+	// tried to implement the rotative movment to the wheel but  couldnt due to lack of time
+	/*b2RevoluteJointDef jointDef;
+	jointDef.bodyA = Wheel->body;
+	jointDef.bodyB = WheelPivot->body;
+	jointDef.localAnchorA = { PIXEL_TO_METERS(258), PIXEL_TO_METERS(333) };
+	jointDef.localAnchorB = { 258,333};
+	jointDef.lowerAngle = 0.0f;
+	jointDef.upperAngle = 0.0f;
+	jointDef.enableLimit = true;
+	jointDef.collideConnected = false;
+	jointDef.enableMotor = true;
+	jointDef.maxMotorTorque = 100.0f;
+	jointDef.motorSpeed = 5.0f;*/
+
 	return ret;
 }
 
@@ -158,8 +189,9 @@ update_status ModuleScene::Update()
 	App->renderer->Blit(balk_texture, balk_poisiton.x, balk_poisiton.y);
 
 	if (StartBumperActive == true) {
-		App->renderer->Blit(yellowBumper, startBumperPosition.x, startBumperPosition.y);
 		StartBumper->body->SetActive(true);
+		App->renderer->Blit(yellowBumper, startBumperPosition.x, startBumperPosition.y);
+
 	}
 	else StartBumper->body->SetActive(false);
 
@@ -213,7 +245,10 @@ update_status ModuleScene::Update()
 	App->renderer->Blit(littleleftflipper, x, y, NULL, 1.0f, flipperLittleLeft->GetRotation(), true);
 
 	//Player Controls
-
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN))
+	{
+		App->audio->PlayFx(flipper_fx, 0);
+	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
 		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(675) });
 		balk_joint->SetFrequency(1.0f);
@@ -222,6 +257,8 @@ update_status ModuleScene::Update()
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		balk_joint->SetTarget({ PIXEL_TO_METERS(425), PIXEL_TO_METERS(635) });
 		balk_joint->SetFrequency(10.0f);
+		App->audio->PlayFx(balk_fx, 0);
+
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
@@ -259,13 +296,15 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyB->type == BALL && bodyA->type == GAMEOVER)
 	{
 		ball->body->SetTransform({ PIXEL_TO_METERS(424),PIXEL_TO_METERS(620) }, ball->GetRotation());
-
+		App->audio->PlayFx(dead_ball_fx, 0);
 		StartBumperActive = false;
 		StartSensor->body->SetActive(true);
 	}
 	if (bodyB->type == BALL2 && bodyA->type == GAMEOVER) {
 
 		ball2->body->SetTransform({ PIXEL_TO_METERS(340), PIXEL_TO_METERS(245) }, ball->GetRotation());
+		App->audio->PlayFx(dead_ball_fx, 0);
+
 		SecondBallActive = false;
 
 	}
@@ -280,23 +319,27 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyB->type == REDBUMBPER1) {
 		changeCircle1Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER2) {
 		changeCircle2Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER3) {
 		changeCircle3Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER4) {
 		changeCircle4Colore = true;
+		App->audio->PlayFx(bumper_fx, 0);
 
 		App->score->Increase(+100);
 
@@ -304,18 +347,21 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyB->type == REDBUMBPER5) {
 		changeCircle5Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER6) {
 		changeCircle6Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER7) {
 		changeCircle7Colore = true;
 		App->score->Increase(+100);
+		App->audio->PlayFx(bumper_fx, 0);
 
 	}
 }

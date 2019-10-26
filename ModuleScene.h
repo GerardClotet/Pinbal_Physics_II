@@ -59,6 +59,8 @@ public:
 	PhysBody* yellowRight;
 	PhysBody* yellowLeft;
 	PhysBody* DropRectangleBall;
+	PhysBody* Wheel;
+	PhysBody* WheelPivot;
 
 	iPoint ball_position;
 	iPoint balk_poisiton;
@@ -93,6 +95,11 @@ public:
 	bool changeCircle7Colore = false;
 	bool SecondBallActive = false;
 
+	uint flipper_fx;
+	uint balk_fx;
+	uint bumper_fx;
+	uint spawn_ball_fx;
+	uint dead_ball_fx;
 };
 
 #endif
