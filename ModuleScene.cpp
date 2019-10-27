@@ -48,7 +48,7 @@ bool ModuleScene::Start()
 	spawn_ball_fx = App->audio->LoadFx("pinball/audio/fx/spawnballsound.wav");
 	dead_ball_fx = App->audio->LoadFx("pinball/audio/fx/deadball.wav");
 
-	App->audio->PlayMusic("pinball/audio/music/music.ogg");
+	App->audio->PlayMusic("pinball/audio/music/music.ogg",-1);
 
 //Colliders
 	backgroundphys = App->physics->CreateChain(0, 0, Board, 82, true);
@@ -174,13 +174,26 @@ bool ModuleScene::Start()
 	jointDef.enableMotor = true;
 	jointDef.maxMotorTorque = 100.0f;
 	jointDef.motorSpeed = 5.0f;*/
-	lives = 5;
 
 	return ret;
 }
 
 update_status ModuleScene::Update()
 {
+	if (decrease_live)
+	{
+		
+			App->score->IncreaseLive(-1);
+			decrease_live = false;
+
+			if (App->score->GetLife() == 0)
+			{
+				LOG("%i", App->score->GetLife());
+				DeadPlayer = true;
+			}
+		
+	}
+
 	ball->GetPosition(ball_position.x, ball_position.y);
 	Balk->GetPosition(balk_poisiton.x, balk_poisiton.y);
 
@@ -280,9 +293,9 @@ update_status ModuleScene::Update()
 		App->renderer->Blit(reStart, 0, 0);
 		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		{
-
+			App->score->ResetLives();
+			App->score->Finish();
 			DeadPlayer = false;
-			lives = 5;
 		}
 	}
 	return UPDATE_CONTINUE;
@@ -310,15 +323,15 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		App->audio->PlayFx(dead_ball_fx, 0);
 		StartBumperActive = false;
 		StartSensor->body->SetActive(true);
-		lives -= 0.5;
+		decrease_live = true;
 	}
 	if (bodyB->type == BALL2 && bodyA->type == GAMEOVER) {
 
 		ball2->body->SetTransform({ PIXEL_TO_METERS(340), PIXEL_TO_METERS(245) }, ball->GetRotation());
 		App->audio->PlayFx(dead_ball_fx, 0);
-		lives -= 0.5;
 
 		SecondBallActive = false;
+		decrease_live = true;
 
 	}
 
@@ -331,21 +344,21 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	if (bodyB->type == REDBUMBPER1) {
 		changeCircle1Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER2) {
 		changeCircle2Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER3) {
 		changeCircle3Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 
@@ -354,31 +367,31 @@ void ModuleScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		changeCircle4Colore = true;
 		App->audio->PlayFx(bumper_fx, 0);
 
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 
 	}
 	if (bodyB->type == REDBUMBPER5) {
 		changeCircle5Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER6) {
 		changeCircle6Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 
 	}
 	if (bodyB->type == REDBUMBPER7) {
 		changeCircle7Colore = true;
-		App->score->Increase(+100);
+		App->score->IncreaseS(+100);
 		App->audio->PlayFx(bumper_fx, 0);
 
 	}
 
-	if (lives == 0) DeadPlayer = true;
+	
 
 }
 

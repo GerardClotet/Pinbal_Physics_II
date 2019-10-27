@@ -27,14 +27,18 @@ bool ModuleScore::Start()
 	numbers[8] = { 172,1,18,21 };
 	numbers[9] = { 193,1,20,21 };
 
-	textScr = { 2,1,110,35 };
+	textScr = { 0,0,122,44 };
+	live_text = { 0,0,122,44 };
 	font = App->textures->Load("pinball/font.png");
 	Score_text = App->textures->Load("pinball/Score.png");
+	lives_tex = App->textures->Load("pinball/LIVES.png");
 	return true;
 }
 
 update_status ModuleScore::Update()
 {
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+		IncreaseLive(-1);
 	if (App->physics->type != GAMEOVER)
 	{
 		int x = 140;
@@ -48,14 +52,18 @@ update_status ModuleScore::Update()
 				x -= 15;
 			}
 		}
+
 	}
+	App->renderer->Blit(font, 300, 750, &numbers[lives]);
+	App->renderer->Blit(lives_tex, 250, 700, &live_text);
+
 
 	App->renderer->Blit(Score_text, 50, 700, &textScr);
 	return UPDATE_CONTINUE;
 }
 
 
-void ModuleScore::Increase(int points)
+void ModuleScore::IncreaseS(int points)
 {
 	score += points;
 
@@ -71,6 +79,21 @@ void ModuleScore::Increase(int points)
 		digits[index] = num;
 		index--;
 	}
+}
+
+void ModuleScore::IncreaseLive(int value)
+{	
+	lives += value;		
+}
+
+void ModuleScore::ResetLives()
+{
+	lives = 5;
+}
+
+int ModuleScore::GetLife()
+{
+	return lives;
 }
 
 void ModuleScore::Finish()

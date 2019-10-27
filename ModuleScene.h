@@ -86,6 +86,8 @@ public:
 
 	b2MouseJoint* balk_joint;
 
+
+
 	bool StartBumperActive = false;
 	bool changeCircle1Colore = false;
 	bool changeCircle2Colore = false;
@@ -97,8 +99,9 @@ public:
 	bool SecondBallActive = false;
 	bool ball1Dead = false;
 	bool ball2Dead = false;
-	float lives = 0;
 	bool DeadPlayer = false;
+
+	bool decrease_live = false;
 	uint flipper_fx;
 	uint balk_fx;
 	uint bumper_fx;
